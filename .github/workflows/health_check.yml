@@ -1,8 +1,8 @@
 name: Health Check
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"
+  # schedule:
+  #   - cron: "*/30 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -17,7 +17,6 @@ jobs:
           max-attempts: 3
           retry-delay: 5s
           retry-all: true
-          timeout: 10s
 
       - name: Discord failure notification
         if: failure()
