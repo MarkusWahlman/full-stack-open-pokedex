@@ -40,10 +40,33 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.75.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Discord success notification
+        if: success() && github.event_name == 'push'
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: info
+          username: GitHub
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          description: |
+            A new version of **Pokedex** deployed  
+            to production
+            by **${{ github.actor }}**
+          footer: "Severity: Informational"
+          text: "Deployment successful"
+
+      - name: Discord failure notification
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: error
+          username: GitHub
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          description: |
+            Build failed
+            Commit: [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})  
+            by **${{ github.actor }}** broke the build :(
+          footer: "Severity: Error"
+          text: "Build failed"
       
   tag_release:
     needs: [simple_deployment_pipeline]
