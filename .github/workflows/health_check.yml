@@ -1,0 +1,33 @@
+name: Health Check
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check application health
+        uses: Jtalk/url-health-check-action@v4
+        with:
+          url: https://full-stack-open-pokedex-e9a3.onrender.com/health
+          follow-redirect: true
+          max-attempts: 3
+          retry-delay: 5s
+          retry-all: true
+          timeout: 10s
+
+      - name: Discord failure notification
+        if: failure()
+        uses: rjstone/discord-webhook-notify@v2
+        with:
+          severity: error
+          username: HealthCheck
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          description: |
+            **Health check failed!**  
+            The production app may be down:  
+            https://full-stack-open-pokedex-e9a3.onrender.com
+          footer: "Severity: Error"
+          text: "Health check failed"

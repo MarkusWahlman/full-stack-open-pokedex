@@ -1,4 +1,4 @@
-name: Lint
+name: Deployment pipeline
 
 on:
   push:
@@ -41,6 +41,8 @@ jobs:
         if: ${{ github.event_name == 'push' }}
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
+
+      # These did not work with the given webhook given in the study.cs.helsinki webhook given in the excercise, but worked when I created my own.
       - name: Discord success notification
         if: success() && github.event_name == 'push'
         uses: rjstone/discord-webhook-notify@v2
