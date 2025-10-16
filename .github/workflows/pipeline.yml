@@ -42,7 +42,7 @@ jobs:
 
       - name: Discord success notification
         if: success() && github.event_name == 'push'
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
           severity: info
           username: GitHub
@@ -56,7 +56,7 @@ jobs:
 
       - name: Discord failure notification
         if: failure()
-        uses: rjstone/discord-webhook-notify@v1
+        uses: rjstone/discord-webhook-notify@v2
         with:
           severity: error
           username: GitHub
